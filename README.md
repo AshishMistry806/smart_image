@@ -16,7 +16,7 @@ A powerful and customizable image widget for Flutter that supports:
 ## 📸 Preview
 
 <p align="center">
-  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/188052156/508810839-c9ad3c4c-ba3b-4e71-89c5-f1ead77cc138.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251103%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251103T062246Z&X-Amz-Expires=300&X-Amz-Signature=b1d6fcb3d9b70f79e814a2ab9f65f565c6bac0ac896d07177844ee15e37b076a&X-Amz-SignedHeaders=host" width="300" />
+  <img src="https://github.com/AshishMistry806/smart_image/blob/main/example/assets/screenshots/screenshot1.png" width="300" />
 </p>
 
 ---
