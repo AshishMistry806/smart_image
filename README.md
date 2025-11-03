@@ -16,7 +16,7 @@ A powerful and customizable image widget for Flutter that supports:
 ## 📸 Preview
 
 <p align="center">
-  <img src="https://github.com/AshishMistry806/smart_image/blob/main/example/assets/screenshots/screenshot1.png" width="300" />
+  <img src="https://github.com/user-attachments/assets/492381a6-625f-4cc6-8663-46148adf15c6" width="300" />
 </p>
 
 ---
