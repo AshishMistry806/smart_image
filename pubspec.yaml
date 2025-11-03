@@ -1,7 +1,7 @@
 name: smart_image
 description: A powerful image widget that supports network/asset/file/svg images, fallback initials, blurhash, shimmer, and online status badges.
-version: 0.0.1
-homepage: https://github.com/AshishMistry806smart_image  # ✅ IMPORTANT
+version: 1.0.0
+homepage: https://github.com/AshishMistry806/smart_image  # ✅ IMPORTANT
 repository: https://github.com/AshishMistry806/smart_image
 issue_tracker: https://github.com/AshishMistry806/smart_image/issues
 topics:
@@ -13,7 +13,7 @@ topics:
 
 
 environment:
-  sdk: ^3.9.0
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -38,9 +38,9 @@ dev_dependencies:
 flutter:
 
   # To add assets to your package, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/screenshots/screenshot1.png
+
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/to/asset-from-package

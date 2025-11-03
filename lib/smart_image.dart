@@ -1,7 +1,9 @@
 // ignore: unnecessary_library_name
+// ignore: unnecessary_library_name
 library smart_image;
 
 import 'dart:io';
+import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -17,25 +19,32 @@ class SmartImage extends StatelessWidget {
   final String imageUrl;
   final String? name;
 
+  // Accessibility
   final String? semanticLabel;
   final String? tooltip;
 
+  // Dimensions
   final double? height;
   final double? width;
   final double borderRadius;
 
+  // Styles
   final BoxFit fit;
   final Color? backgroundColor;
   final Color? tintColor;
   final Color? textColor;
+
+  // NEW: initials text style (dynamic)
+  final TextStyle? initialsTextStyle;
+
+  // ✅ NEW: dynamic padding
+  final EdgeInsetsGeometry? padding;
 
   final bool useNameAsFallback;
   final AvatarShape initialsShape;
 
   final LoadingAnimation loadingAnimation;
   final String? blurHash;
-
-  final bool? isOnlineBadge;
 
   final Widget? errorWidget;
 
@@ -52,11 +61,12 @@ class SmartImage extends StatelessWidget {
     this.backgroundColor,
     this.tintColor,
     this.textColor,
+    this.initialsTextStyle,
+    this.padding,
     this.useNameAsFallback = false,
     this.initialsShape = AvatarShape.circle,
     this.loadingAnimation = LoadingAnimation.shimmer,
     this.blurHash,
-    this.isOnlineBadge,
     this.errorWidget,
   });
 
@@ -64,6 +74,8 @@ class SmartImage extends StatelessWidget {
   bool get _isSvg => imageUrl.toLowerCase().endsWith(".svg");
   bool get _isFile => imageUrl.startsWith("/") || imageUrl.contains(":\\");
   bool get _isAsset => !(_isNetwork || _isFile);
+
+  double _minSide() => min(height ?? width ?? 48.0, width ?? height ?? 48.0);
 
   @override
   Widget build(BuildContext context) {
@@ -102,34 +114,23 @@ class SmartImage extends StatelessWidget {
       }
     }
 
-    image = ClipRRect(
+    return ClipRRect(
       borderRadius: initialsShape == AvatarShape.circle
-          ? BorderRadius.circular(width != null ? width! / 2 : borderRadius)
+          ? BorderRadius.circular((width ?? height ?? 48) / 2)
           : BorderRadius.circular(borderRadius),
-      child: image,
-    );
-
-    Widget finalWidget = Container(
-      height: height,
-      width: width,
-      clipBehavior: Clip.antiAlias,
-      color: backgroundColor,
-      child: Semantics(
-        label: semanticLabel,
-        child: Tooltip(message: tooltip ?? name, child: image),
+      child: Container(
+        height: height,
+        width: width,
+        color: backgroundColor,
+        child: Semantics(
+          label: semanticLabel,
+          child: Tooltip(
+            message: tooltip ?? name ?? "",
+            child: _applyPadding(image), // ✅ padding applied here
+          ),
+        ),
       ),
     );
-
-    if (isOnlineBadge != null) {
-      finalWidget = Stack(
-        children: [
-          finalWidget,
-          Positioned(bottom: 4, right: 4, child: _statusBadge()),
-        ],
-      );
-    }
-
-    return finalWidget;
   }
 
   Widget _networkImage() {
@@ -157,16 +158,6 @@ class SmartImage extends StatelessWidget {
     );
   }
 
-  Widget _statusBadge() => Container(
-    width: 12,
-    height: 12,
-    decoration: BoxDecoration(
-      color: isOnlineBadge == true ? Colors.green : Colors.grey,
-      shape: BoxShape.circle,
-      border: Border.all(color: Colors.white, width: 2),
-    ),
-  );
-
   Widget _shimmer() {
     return Shimmer.fromColors(
       baseColor: Colors.grey.shade300,
@@ -175,30 +166,67 @@ class SmartImage extends StatelessWidget {
     );
   }
 
+  Widget _applyPadding(Widget child) {
+    return Padding(
+      padding: padding ?? EdgeInsets.zero,
+      child: child,
+    );
+  }
+
   Widget _buildFallback() {
-    if (useNameAsFallback && (name ?? "").trim().isNotEmpty) {
-      return Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.grey.shade300,
-          shape: initialsShape == AvatarShape.circle
-              ? BoxShape.circle
-              : BoxShape.rectangle,
-          borderRadius: initialsShape == AvatarShape.rounded
-              ? BorderRadius.circular(borderRadius)
-              : null,
-        ),
-        child: AutoSizeText(
-          name!.trim()[0].toUpperCase(),
-          style: TextStyle(
-            fontSize: 36,
+    final bool showInitials =
+        useNameAsFallback && (name ?? "").trim().isNotEmpty;
+
+    if (showInitials) {
+      final cleaned = name!.trim();
+      final parts = cleaned.split(RegExp(r'\s+'));
+      final String initials = parts.length >= 2
+          ? (parts.first[0] + parts.last[0]).toUpperCase()
+          : cleaned[0].toUpperCase();
+
+      double computedSize = (_minSide()) * 0.40;
+      final TextStyle baseStyle = initialsTextStyle ??
+          TextStyle(
+            fontSize: computedSize,
+            fontWeight: FontWeight.w700,
             color: textColor ?? Colors.black,
-            fontWeight: FontWeight.bold,
+          );
+
+      final double finalFontSize = baseStyle.fontSize ?? computedSize;
+      final TextStyle finalStyle = baseStyle.copyWith(
+        fontSize: finalFontSize,
+        color: baseStyle.color ?? textColor ?? Colors.black,
+      );
+
+      return _applyPadding(
+        // ✅ padding applied inside fallback too
+        Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: backgroundColor ?? Colors.grey.shade300,
+            shape: initialsShape == AvatarShape.circle
+                ? BoxShape.circle
+                : BoxShape.rectangle,
+            borderRadius: initialsShape == AvatarShape.rounded
+                ? BorderRadius.circular(borderRadius)
+                : null,
+          ),
+          child: AutoSizeText(
+            initials,
+            maxLines: 1,
+            minFontSize: 2,
+            maxFontSize: finalFontSize,
+            style: finalStyle,
+            textAlign: TextAlign.center,
           ),
         ),
       );
     }
-    return errorWidget ??
-        const Icon(Icons.broken_image_rounded, size: 40, color: Colors.grey);
+
+    return _applyPadding(
+      // ✅ also apply padding to errorWidget/icon
+      errorWidget ??
+          const Icon(Icons.broken_image_rounded, size: 40, color: Colors.grey),
+    );
   }
 }
