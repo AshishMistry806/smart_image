@@ -1,3 +1,6 @@
+## 1.0.5
+- Fixed README screenshot path (now visible on pub.dev)
+
 ## 1.0.4
 - Fixed README screenshot path (now visible on pub.dev)
 
