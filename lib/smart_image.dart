@@ -1,5 +1,4 @@
 // ignore: unnecessary_library_name
-// ignore: unnecessary_library_name
 library smart_image;
 
 import 'dart:io';
@@ -82,18 +81,32 @@ class SmartImage extends StatelessWidget {
     Widget image = _buildFallback();
 
     if (imageUrl.isNotEmpty) {
-      if (_isNetwork) {
+      if (_isSvg) {
+        if (_isNetwork) {
+          image = SvgPicture.network(
+            imageUrl,
+            width: width,
+            height: height,
+            fit: fit,
+            colorFilter: tintColor != null
+                ? ColorFilter.mode(tintColor!, BlendMode.srcIn)
+                : null,
+            errorBuilder: (_, __, ___) => _buildFallback(),
+          );
+        } else {
+          image = SvgPicture.asset(
+            imageUrl,
+            width: width,
+            height: height,
+            fit: fit,
+            colorFilter: tintColor != null
+                ? ColorFilter.mode(tintColor!, BlendMode.srcIn)
+                : null,
+            errorBuilder: (_, __, ___) => _buildFallback(),
+          );
+        }
+      } else if (_isNetwork) {
         image = _networkImage();
-      } else if (_isSvg) {
-        image = SvgPicture.asset(
-          imageUrl,
-          width: width,
-          height: height,
-          fit: fit,
-          colorFilter: tintColor != null
-              ? ColorFilter.mode(tintColor!, BlendMode.srcIn)
-              : null,
-        );
       } else if (_isFile) {
         image = Image.file(
           File(imageUrl),

@@ -27,7 +27,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  smart_image: ^1.0.5
+  smart_image: ^1.0.6
 ```
 
 ---
