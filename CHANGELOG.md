@@ -1,3 +1,6 @@
+## 1.0.4
+- Fixed README screenshot path (now visible on pub.dev)
+
 ## 1.0.3
 - Updated README preview screenshot & documentation improvements
 

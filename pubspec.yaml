@@ -1,6 +1,6 @@
 name: smart_image
 description: A powerful image widget that supports network/asset/file/svg images, fallback initials, blurhash, shimmer, and online status badges.
-version: 1.0.3
+version: 1.0.4
 homepage: https://github.com/AshishMistry806/smart_image  # ✅ IMPORTANT
 repository: https://github.com/AshishMistry806/smart_image
 issue_tracker: https://github.com/AshishMistry806/smart_image/issues
