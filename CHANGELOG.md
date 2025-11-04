@@ -1,3 +1,6 @@
+## 1.0.7
+- Fixed README screenshot path (now visible on pub.dev)
+
 ## 1.0.6
 - Add Network SVG Image Support
 
